@@ -10,16 +10,19 @@
 #define LOGTO_LOGREAD
 
 #ifdef LOGTO_LOGREAD
-#define TRACE_LOG(pri,fmt,args...) logwritef(pri, fmt, ##args)
+/* USING VERSION THAT WRITES TO SYSTEM LOG. 
+ARGUMENTS - pri - priority(int). fmt - format(const char*). args - valist*/
+#define TRACE_LOG(pri, fmt, args...) logwritef(pri, fmt, ##args)
 #endif
 #ifndef LOGTO_LOGREAD
-//#define TRACE_LOG(pri,fmt,...) printf((fmt), ##__VA_ARGS__)
-#define TRACE_LOG(pri,format, args...) \    
-    fprintf(stderr, format , ## args); \
-    fprintf(stderr, "\n"); 
+/* USING VERSION THAT WRITES TO THE STDOUT STREAM. */
+#define TRACE_LOG(pri, format, args...) \
+    fprintf(stderr, format, ##args);    \
+    fprintf(stderr, "\n");
 #endif
 
-int logwritepri(int pri, const char* text);
-int logwrite(const char* text);
-int logwritef(int pri, const char* fmt,...);
+int logwritef(int pri, const char *fmt, ...);
+int logwrite(const char *text);
+int logwritepri(int pri, const char *text);
+
 #endif
