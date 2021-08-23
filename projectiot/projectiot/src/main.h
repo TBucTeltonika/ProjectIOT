@@ -12,23 +12,32 @@
 #include "iot.h"
 #include "logger.h"
 void term_proc(int sigterm);
+
+/*Callback function for the ubus memory request. to be used with ubus_invoke.*/
 static void board_cb(struct ubus_request *req, int type, struct blob_attr *msg);
 
-  enum {
-          MEM_TOTAL,
-          MEM_FREE,
-          MEM_SHARED,
-          MEM_BUFFERED,
-          __MEM_MAX
-  };
-  
-  static const struct blobmsg_policy mem_policy[] = {
-          [MEM_FREE] = { .name = "memfree", .type = BLOBMSG_TYPE_INT64 },
-          [MEM_TOTAL] = { .name = "memtotal", .type = BLOBMSG_TYPE_INT64 },
-          [MEM_SHARED] = { .name = "memshared", .type = BLOBMSG_TYPE_INT64 },
-          [MEM_BUFFERED] = { .name = "membuffered", .type = BLOBMSG_TYPE_INT64 },
-  };
+/*Get Ram in JSON data*/
+int GetJSONMemData(struct ubus_context *ctx, char *dest);
 
+/*Main program loop*/
+int SendDataToIoTLoop();
 
-//UBUS Object stuff:
+/*Send the data to IoT object
+ARGUMENTS: const char *jsonstring- JSON string.*/
+int SendData(char *jsonstring);
 
+enum
+{
+        MEM_TOTAL,
+        MEM_FREE,
+        MEM_SHARED,
+        MEM_BUFFERED,
+        __MEM_MAX
+};
+
+static const struct blobmsg_policy mem_policy[] = {
+    [MEM_FREE] = {.name = "memfree", .type = BLOBMSG_TYPE_INT64},
+    [MEM_TOTAL] = {.name = "memtotal", .type = BLOBMSG_TYPE_INT64},
+    [MEM_SHARED] = {.name = "memshared", .type = BLOBMSG_TYPE_INT64},
+    [MEM_BUFFERED] = {.name = "membuffered", .type = BLOBMSG_TYPE_INT64},
+};
