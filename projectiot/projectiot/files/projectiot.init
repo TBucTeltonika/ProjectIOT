@@ -1,0 +1,35 @@
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+
+start_service() {
+        local enabled
+		local auth_orgid
+		local auth_typeid
+		local auth_deviceid
+		local auth_authtoken
+
+        config_load 'projectiot'
+        config_get enabled projectiot_sct 'enable' '0'
+		config_get auth_orgid projectiot_sct 'auth_orgid' 'auth_orgid'
+		config_get auth_typeid projectiot_sct 'auth_typeid' 'auth_typeid'
+		config_get auth_deviceid projectiot_sct 'auth_deviceid' 'auth_deviceid'
+		config_get auth_authtoken projectiot_sct 'auth_authtoken' 'auth_authtoken'
+
+	if [ "$enabled" -eq 1 ]; then
+	        procd_open_instance
+	        procd_set_param command /usr/bin/projectiot
+	        procd_set_param pidfile /var/run/projectiot.pid
+		procd_set_param file /etc/config/projectiot
+        	procd_close_instance
+	fi
+}
+
+service_triggers() {
+	procd_add_reload_trigger "projectiot"
+}
+
+reload_service() {
+	stop
+	start
+}
